@@ -1,4 +1,6 @@
+using eMovies.Controllers;
 using eMovies.Data;
+using eMovies.Data.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 //eshte si translator mes c# classes dhe database ,e kem definu edhe sql serverin permes connection stringut.
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+
+//Services configuration
+//actors service configuration
+builder.Services.AddScoped<IActorsService, ActorsService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
