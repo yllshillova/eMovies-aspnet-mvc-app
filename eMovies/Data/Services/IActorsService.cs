@@ -5,14 +5,14 @@ namespace eMovies.Data.Services
     public interface IActorsService
     {
         //metoda qe i kthen krejt aktort
-        Task<IEnumerable<Actor>> GetAll();
+        Task<IEnumerable<Actor>> GetAllAsync();
         //metoda qe e kthen veq ni aktor
-        Actor GetActorById(int id);
+        Task<Actor> GetActorByIdAsync(int id);
         //metoda per me add nje actor
-        void Add(Actor actor);
+        Task AddAsync(Actor actor);
         //update metoda
-        Actor update(int id, Actor newActor);
+        Task<Actor> UpdateAsync(int id, Actor newActor);
         //delete metoda
-        void Delete(int id);
+        Task DeleteAsync(int id);
     }
 }
