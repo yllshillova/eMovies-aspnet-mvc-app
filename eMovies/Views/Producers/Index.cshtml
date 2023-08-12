@@ -60,9 +60,10 @@
                             @Html.DisplayFor(modelItem => item.Bio)
                         </td>
                         <td class="align-middle">
-                            <a class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i>Edit</a> |
-                            <a class="btn btn-outline-info"><i class="bi bi-eye"></i>Details</a> |
-                            <a class="btn btn-danger"><i class="bi bi-trash"></i>Delete</a>
+                                        @*se bojm asp-controller="Producers se by default o qiky controller masi jemi ne file te njejt edhe modeli o Producer"*@
+                            <a class="btn btn-outline-primary" asp-controller="Producers" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i>Edit</a> |
+                            <a class="btn btn-outline-info" asp-controller="Producers" asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i>Details</a> |
+                            <a class="btn btn-danger" asp-controller="Producers" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i>Delete</a>
                         </td>
                     </tr>
                 }
@@ -70,4 +71,11 @@
 
         </table>
     </div>
+</div>
+
+
+<div style="position: fixed; right: 25px; bottom: 75px;" class="text-white">
+    <a asp-controller="Producers" asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus circle"></i>Add New
+    </a>
 </div>

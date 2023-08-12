@@ -1,17 +1,17 @@
-﻿@model Actor
+﻿@model Producer
 
 @{
-    ViewData["Title"] = "Add a new actor";
+    ViewData["Title"] = "Update Producer";
 }
 
 <div class="row text">
     <div class="col-md-8 offset-2">
         <p>
-            <h1>Add a new Actor</h1>
+            <h1>Update Producer</h1>
         </p>
         <div class="row">
             <div class="col-md-8 offset-2">
-                <form asp-controller="Actors" asp-action="Create">
+                <form asp-controller="Producers" asp-action="Edit">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <div class="form-group text-center">
@@ -34,8 +34,8 @@
                     </div>
 
                     <div class="form-group d-flex justify-content-between mt-2">
-                        <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
-                        <input type="submit" value="Create" class="btn btn-outline-success"/>
+                        <a class="btn btn-outline-secondary" asp-controller="Producers" asp-action="Index">Show All</a>
+                        <input type="submit" value="Update" class="btn btn-outline-success"/>
                     </div>
                 </form>
             </div>
@@ -44,17 +44,17 @@
 </div>
 
 @section Scripts {
-    <script>
-        //kur osht gati dokumenti me na dal foto meniher
-        $(document).ready(function () {
-            var output = document.getElementById('ProfilePicturePreview');
-            output.src = $("#ProfilePictureURL").val();
-        })
-        //kur ndrron
-        $("#ProfilePictureURL").on("change", function () {
-            var output = document.getElementById('ProfilePicturePreview');
-            output.src =$(this).val();
-                })
-    </script>
+        <script>
+            //kur osht gati dokumenti me na dal foto meniher
+            $(document).ready(function () {
+                var output = document.getElementById('ProfilePicturePreview');
+                output.src = $("#ProfilePictureURL").val();
+            })
+            //kur ndrron
+            $("#ProfilePictureURL").on("change", function () {
+                var output = document.getElementById('ProfilePicturePreview');
+                output.src =$(this).val();
+                    })
+        </script>
 }
 
