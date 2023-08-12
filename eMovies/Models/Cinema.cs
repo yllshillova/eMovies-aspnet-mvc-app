@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using eMovies.Data.Base;
+using System.ComponentModel.DataAnnotations;
 
 namespace eMovies.Models
 {
-    public class Cinema
+    public class Cinema: IEntityBase
     {
         [Key]
         public int Id { get; set; }
@@ -14,7 +15,7 @@ namespace eMovies.Models
         public string Description { get; set; }
 
         //Relationships
-        public List<Movie> Movies { get; set; }
+        public List<Movie>? Movies { get; set; }
 
     }
 }

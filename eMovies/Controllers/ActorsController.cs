@@ -52,10 +52,10 @@ namespace eMovies.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,ProfilePictureURL,Bio")] Actor actor)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(actor);
-            }
+            if (!ModelState.IsValid) return View(actor);
+            
+            if (id != actor.Id) return View("NotFound");
+
             await _service.UpdateAsync(id, actor);
             return RedirectToAction(nameof(Index));
         }
@@ -68,7 +68,7 @@ namespace eMovies.Controllers
             return View(actorDetails);
         }
 
-        [HttpPost,ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var actorDetails = await _service.GetByIdAsync(id);
