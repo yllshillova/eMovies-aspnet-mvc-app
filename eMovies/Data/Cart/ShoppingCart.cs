@@ -1,5 +1,6 @@
 ﻿using eMovies.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace eMovies.Data.Cart
 {
@@ -9,11 +10,28 @@ namespace eMovies.Data.Cart
 
         public string ShoppingCartId { get; set; }
         public List<ShoppingCartItem> ShoppingCartItems { get; set; }
+
         public ShoppingCart(AppDbContext context)
         {
             _context = context;
         }
+        //OSHT METOD statike se ko mu perdor nstartup.cs
+        public static ShoppingCart GetShoppingCart(IServiceProvider services)
+        {                 //nese ihttpcontextaccessor so null ather i jep access sessionit qe me mar objektin e sessionit. 
+            ISession session = services.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
 
+            var context = services.GetService<AppDbContext>();
+            // kontrollojm a kem cartId nese jo e gjenerojm njo t ri
+            string cartId = session.GetString("CartId") ?? Guid.NewGuid().ToString();
+
+            session.SetString("CartId", cartId);
+
+            return new ShoppingCart(context)
+            {
+                ShoppingCartId = cartId
+            };
+
+        }
 
 
         public List<ShoppingCartItem> GetShoppingCartItems()
@@ -69,6 +87,14 @@ namespace eMovies.Data.Cart
 
         }
 
-
+        public async Task ClearShoppingCartAsync()
+        {
+            var items = await _context.ShoppingCartItems.Where(n => n.ShoppingCartId == ShoppingCartId).ToListAsync();
+            _context.ShoppingCartItems.RemoveRange(items);
+            await _context.SaveChangesAsync();
+        }
     }
+
+
 }
+

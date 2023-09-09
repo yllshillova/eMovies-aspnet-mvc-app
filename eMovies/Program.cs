@@ -1,5 +1,6 @@
 using eMovies.Controllers;
 using eMovies.Data;
+using eMovies.Data.Cart;
 using eMovies.Data.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,16 @@ builder.Services.AddScoped<IActorsService, ActorsService>();
 builder.Services.AddScoped<IProducersService, ProducersService>();
 builder.Services.AddScoped<ICinemasService, CinemasService>();
 builder.Services.AddScoped<IMoviesService, MoviesService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped(delegate (IServiceProvider sc)
+{
+    return ShoppingCart.GetShoppingCart(sc);
+});
+builder.Services.AddScoped<IOrdersService, OrdersService>();
+builder.Services.AddSession();
+
+
+
 
 var app = builder.Build();
 
@@ -31,6 +42,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
 
