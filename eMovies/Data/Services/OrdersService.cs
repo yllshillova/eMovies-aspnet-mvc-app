@@ -10,9 +10,15 @@ namespace eMovies.Data.Services
         {
             _context = context;
         }
-        public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
+        public async Task<List<Order>> GetOrdersByUserIdAndRoleAsync(string userId, string userRole)
         {
-            var orders = await _context.Orders.Include(n => n.OrderItems).ThenInclude(m => m.Movie).Where(o => o.UserId == userId).ToListAsync();
+            var orders = await _context.Orders.Include(n => n.OrderItems).ThenInclude(m => m.Movie).Include(u => u.User).ToListAsync();
+
+            if(userRole != "Admin")
+            {
+                orders =orders.Where(n => n.UserId == userId).ToList();
+            }
+
             return orders;
         }
 

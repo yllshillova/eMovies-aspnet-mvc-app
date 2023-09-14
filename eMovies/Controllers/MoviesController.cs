@@ -1,12 +1,15 @@
 ﻿using eMovies.Data;
 using eMovies.Data.Services;
+using eMovies.Data.Static;
 using eMovies.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace eMovies.Controllers
 {
+    [Authorize(Roles = UserRoles.Admin)]
     public class MoviesController : Controller
     {
         private readonly IMoviesService _service;
@@ -14,25 +17,27 @@ namespace eMovies.Controllers
         {
             _service = service;
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         { //_context.Movies.Include(n => n.Cinema).OrderBy(n => n.Name).ToListAsync()
             var allMovies = await _service.GetAllAsync(n => n.Cinema);
             return View(allMovies);
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Filter(string searchString)
         {
             var allMovies = await _service.GetAllAsync(n => n.Cinema);
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                var filteredResult = allMovies.Where(n =>
-                    n.Name.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                    n.Description.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0
-                ).ToList();
+                //var filteredResult = allMovies.Where(n => n.Name.ToLower().Contains(searchString.ToLower()) ||  n.Description.ToLower().Contains(searchString.ToLower())).ToList();
 
-                if (filteredResult.Any())
+                var filteredResultNew = allMovies.Where(n => string.Equals(n.Name,searchString,StringComparison.CurrentCultureIgnoreCase) 
+                || string.Equals(n.Description, searchString, StringComparison.CurrentCultureIgnoreCase)).ToList();
+
+                if (filteredResultNew.Any())
                 {
-                    return View("Index", filteredResult);
+                    return View("Index", filteredResultNew);
                 }
                 else
                 {
@@ -44,6 +49,7 @@ namespace eMovies.Controllers
         }
 
         //GET: Movies/Details/1
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
             var movieDetails = await _service.GetMovieByIdAsync(id);

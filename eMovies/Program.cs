@@ -2,6 +2,9 @@ using eMovies.Controllers;
 using eMovies.Data;
 using eMovies.Data.Cart;
 using eMovies.Data.Services;
+using eMovies.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,8 +26,15 @@ builder.Services.AddScoped(delegate (IServiceProvider sc)
     return ShoppingCart.GetShoppingCart(sc);
 });
 builder.Services.AddScoped<IOrdersService, OrdersService>();
-builder.Services.AddSession();
 
+//Authentication and authorization
+//addidentity i ka 2 parametra i pari osht identityuser class(applicationUser) edhe i dyti identityRole
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddMemoryCache();
+builder.Services.AddSession();
+builder.Services.AddAuthentication(options => {
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+});
 
 
 
@@ -44,6 +54,9 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 
+//Authentication and authorization
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -52,6 +65,6 @@ app.MapControllerRoute(
 
 //Seed database
 AppDbInitializer.Seed(app);
-
+AppDbInitializer.SeedUsersAndRolesAsync(app).Wait();
 
 app.Run();

@@ -1,5 +1,7 @@
 ﻿using eMovies.Data.Enums;
+using eMovies.Data.Static;
 using eMovies.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace eMovies.Data
 {
@@ -312,6 +314,59 @@ namespace eMovies.Data
                 }
             }
 
+
+        }
+
+        public static async Task SeedUsersAndRolesAsync(IApplicationBuilder applicationBuilder)
+        {
+            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            {
+
+                //roles section
+                var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+                }
+                if (!await roleManager.RoleExistsAsync(UserRoles.User))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+                }
+
+                //users section
+
+                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                string adminUserEmail = "admin@emovies.com";
+                var adminUser = await userManager.FindByEmailAsync(adminUserEmail);
+                if (adminUser == null)
+                {
+                    var newAdminUser = new ApplicationUser()
+                    {
+                        FullName = "Admin User",
+                        UserName = "admin",
+                        Email = adminUserEmail,
+                        EmailConfirmed = true
+                    };
+                    await userManager.CreateAsync(newAdminUser, "Coding@1234");
+                    await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
+                }
+
+                string simpleUserEmail = "user@emovies.com";
+                var simpleUser = await userManager.FindByEmailAsync(simpleUserEmail);
+                if (simpleUser == null)
+                {
+                    var newSimpleUser = new ApplicationUser()
+                    {
+                        FullName = "Simple User",
+                        UserName = "user",
+                        Email = simpleUserEmail,
+                        EmailConfirmed = true
+                    };
+                    await userManager.CreateAsync(newSimpleUser, "Coding@1234");
+                    await userManager.AddToRoleAsync(newSimpleUser, UserRoles.User);
+                }
+            }
         }
     }
 }
