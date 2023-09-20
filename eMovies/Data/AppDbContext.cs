@@ -21,7 +21,7 @@ namespace eMovies.Data
             });
             //definimi i relacioneve kur ndahet kjo tabel ne one to many edhe many to one
             modelBuilder.Entity<Actor_Movie>().HasOne(m => m.Movie).WithMany(am => am.Actors_Movies).HasForeignKey(m => m.MovieId);
-            modelBuilder.Entity<Actor_Movie>().HasOne(a => a.Actor).WithMany(am => am.Actors_Movies).HasForeignKey(a => a.ActorId);
+            modelBuilder.Entity<Actor_Movie>().HasOne(a => a.Actor).WithMany(am => am.Actors_Movies).HasForeignKey(a => a.ActorId); 
             base.OnModelCreating(modelBuilder);
         }
         public DbSet<Actor> Actors { get; set; }

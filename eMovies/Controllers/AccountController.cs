@@ -47,16 +47,13 @@ namespace eMovies.Controllers
                 if (passwordCheck)
                 {
                     var result = await _signInManager.PasswordSignInAsync(user, loginVM.Password, false, false);
-
                     if (result.Succeeded)
                     {
                         return RedirectToAction("Index", "Movies");
                     }
-                    TempData["Error"] = "Wrong credentials. Please, try again!";
-                    return View(loginVM);
                 }
-
-
+                TempData["Error"] = "Wrong credentials. Please, try again!";
+                return View(loginVM);
             }
 
             TempData["Error"] = "Wrong credentials. Please, try again!";
@@ -86,16 +83,12 @@ namespace eMovies.Controllers
                 Email = registerVM.EmailAddress,
                 UserName = registerVM.EmailAddress
             };
-
             var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
 
             if (newUserResponse.Succeeded)
-            {
                 await _userManager.AddToRoleAsync(newUser, UserRoles.User);
-            }
 
             return View("RegisterSucceeded");
-
         }
 
         [HttpPost]

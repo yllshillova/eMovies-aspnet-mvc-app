@@ -12,8 +12,8 @@ using eMovies.Data;
 namespace eMovies.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230913190735_Initial")]
-    partial class Initial
+    [Migration("20230920012242_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -268,6 +268,45 @@ namespace eMovies.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("eMovies.Models.AutoSalloni58323", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Emri58323")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AutoSalloni58323s");
+                });
+
+            modelBuilder.Entity("eMovies.Models.Car58323", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AutoSalloni58323")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Emri58323")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AutoSalloni58323");
+
+                    b.ToTable("Car58323s");
+                });
+
             modelBuilder.Entity("eMovies.Models.Cinema", b =>
                 {
                     b.Property<int>("Id")
@@ -354,9 +393,11 @@ namespace eMovies.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -511,6 +552,17 @@ namespace eMovies.Migrations
                     b.Navigation("Movie");
                 });
 
+            modelBuilder.Entity("eMovies.Models.Car58323", b =>
+                {
+                    b.HasOne("eMovies.Models.AutoSalloni58323", "Autosalloni")
+                        .WithMany("Cars")
+                        .HasForeignKey("AutoSalloni58323")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Autosalloni");
+                });
+
             modelBuilder.Entity("eMovies.Models.Movie", b =>
                 {
                     b.HasOne("eMovies.Models.Cinema", "Cinema")
@@ -528,6 +580,17 @@ namespace eMovies.Migrations
                     b.Navigation("Cinema");
 
                     b.Navigation("Producer");
+                });
+
+            modelBuilder.Entity("eMovies.Models.Order", b =>
+                {
+                    b.HasOne("eMovies.Models.ApplicationUser", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("eMovies.Models.OrderItem", b =>
@@ -563,6 +626,16 @@ namespace eMovies.Migrations
             modelBuilder.Entity("eMovies.Models.Actor", b =>
                 {
                     b.Navigation("Actors_Movies");
+                });
+
+            modelBuilder.Entity("eMovies.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("eMovies.Models.AutoSalloni58323", b =>
+                {
+                    b.Navigation("Cars");
                 });
 
             modelBuilder.Entity("eMovies.Models.Cinema", b =>

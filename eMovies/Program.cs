@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 //eshte si translator mes c# classes dhe database ,e kem definu edhe sql serverin permes connection stringut.
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
-
+//builder.Services.AddSwaggerGen();
 //Services configuration
 //actors service configuration
 builder.Services.AddScoped<IActorsService, ActorsService>();
@@ -27,9 +27,20 @@ builder.Services.AddScoped(delegate (IServiceProvider sc)
 });
 builder.Services.AddScoped<IOrdersService, OrdersService>();
 
+
 //Authentication and authorization
 //addidentity i ka 2 parametra i pari osht identityuser class(applicationUser) edhe i dyti identityRole
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Other identity configurations...
+
+    options.Password.RequireDigit = false; // Do not require a digit (number).
+    options.Password.RequireLowercase = false; // Do not require a lowercase letter.
+    options.Password.RequireUppercase = false; // Do not require an uppercase letter.
+    options.Password.RequireNonAlphanumeric = false; // Do not require a special character.
+    options.Password.RequiredLength = 1; // Set the minimum password length you desire.
+});
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(options => {
@@ -40,12 +51,18 @@ builder.Services.AddAuthentication(options => {
 
 var app = builder.Build();
 
+
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+   // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+   app.UseHsts();
 }
 
 app.UseHttpsRedirection();
